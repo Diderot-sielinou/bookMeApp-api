@@ -1,7 +1,7 @@
 {
   "name": "bookme-api",
   "version": "1.0.0",
-  "description": "BookMe - Plateforme de réservation de rendez-vous en ligne",
+  "description": "BookMe - Online appointment booking platform",
   "author": "BookMe Team",
   "private": true,
   "license": "UNLICENSED",
