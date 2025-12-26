@@ -1,5 +1,5 @@
 import { NestFactory } from '@nestjs/core';
-import { ValidationPipe, Logger } from '@nestjs/common';
+import { ValidationPipe, Logger, BadRequestException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { IoAdapter } from '@nestjs/platform-socket.io';
@@ -44,6 +44,19 @@ async function bootstrap() {
       transform: true,
       transformOptions: {
         enableImplicitConversion: true,
+      },
+      exceptionFactory: (errors) => {
+        // Log detailed validation errors
+        console.log('Validation errors:', JSON.stringify(errors, null, 2));
+        return new BadRequestException({
+          message: 'Validation failed',
+          errors: errors.map((e) => ({
+            field: e.property,
+            constraints: e.constraints,
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+            value: e.value,
+          })),
+        });
       },
     })
   );
