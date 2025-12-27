@@ -26,8 +26,7 @@
     "migration:revert": "npm run typeorm -- migration:revert -d src/config/typeorm.config.ts",
     "seed": "ts-node -r tsconfig-paths/register src/database/seeds/seed.ts",
     "prepare": "husky || true",
-    "build:prod": "npm run build && npm run migration:run:prod",
-    "render:build": "npm ci && npm run build",
+    "render:build": "npm ci --include=dev && npm run build",
     "render:start": "npm run migration:run:prod && npm run start:prod"
   },
   "engines": {
