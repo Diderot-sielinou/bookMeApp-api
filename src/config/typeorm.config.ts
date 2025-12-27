@@ -1,20 +1,23 @@
 import { DataSource, DataSourceOptions } from 'typeorm';
 import * as dotenv from 'dotenv';
+import * as path from 'path';
 
-// Charger les variables d'environnement
-dotenv.config({ path: `.env.${process.env.NODE_ENV || 'development'}` });
+const envFile =
+  process.env.NODE_ENV === 'production'
+    ? '.env.production'
+    : `.env.${process.env.NODE_ENV || 'development'}`;
+dotenv.config({ path: envFile });
+dotenv.config();
 
 const dbUrl = process.env.DATABASE_URL;
 
-const config: DataSourceOptions = dbUrl
+const baseConfig: DataSourceOptions = dbUrl
   ? {
-      // URL de connexion (Supabase / Production)
       type: 'postgres',
       url: dbUrl,
       ssl: process.env.DATABASE_SSL === 'true' ? { rejectUnauthorized: false } : false,
     }
   : {
-      // Cas : Paramètres individuels (Local / Développement)
       type: 'postgres',
       host: process.env.DATABASE_HOST || 'localhost',
       port: parseInt(process.env.DATABASE_PORT || '5432', 10),
@@ -23,11 +26,24 @@ const config: DataSourceOptions = dbUrl
       database: process.env.DATABASE_NAME || 'bookme',
     };
 
-// Propriétés communes (Entities, Migrations, etc.)
+const isCompiled = __dirname.includes('dist');
+
+const entitiesPath = isCompiled
+  ? path.join(__dirname, '..', '**', '*.entity.js')
+  : path.join(__dirname, '..', 'database', 'migrations', '*.ts');
+
+const migrationsPath = isCompiled
+  ? path.join(__dirname, '..', 'database', 'migrations', '*.js')
+  : path.join(__dirname, '..', 'database', 'migrations', '*.ts');
+
 export default new DataSource({
-  ...config,
-  entities: [__dirname + '/../**/*.entity{.ts,.js}'],
-  migrations: [__dirname + '/../database/migrations/*{.ts,.js}'],
+  ...baseConfig,
+  entities: [entitiesPath],
+  migrations: [migrationsPath],
   synchronize: false,
-  logging: true,
+  logging: process.env.NODE_ENV !== 'production',
+  extra: {
+    max: 20,
+    connectionTimeoutMillis: 10000,
+  },
 });
