@@ -167,7 +167,7 @@ After implementing Redis caching for provider availability, I noticed that booki
 
 ## What I Learned
 
-**Technical lesson:** Database transactions are not just for preventing data loss — they are a primary tool for concurrency control. Understanding when to use transactions versus application-level locks was a key architectural insight.
+**Technical lesson:** Database transactions are essential for concurrency control, not just data safety. Furthermore, implementing WebSockets taught me how to manage persistent connections, handle heartbeats (PONG/PING), and broadcast events efficiently to specific rooms (appointment-based chat rooms).
 
 **Workflow lesson:** Designing the API schema and DTO contracts before writing handlers meant the frontend and backend could be developed in parallel without blocking each other. This discipline would be essential in a team setting.
 
@@ -182,4 +182,4 @@ After implementing Redis caching for provider availability, I noticed that booki
 - Implement recurring appointment scheduling
 - Add a public booking link that providers can share on social media without clients needing an account
 - SMS notifications via Twilio as an alternative to email
-- Admin panel for platform moderation
+- Voice/Video call integration within the chat for consultations.
