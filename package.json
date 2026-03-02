@@ -19,11 +19,19 @@
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
     "typeorm": "ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js",
+    "typeorm:prod": "node ./node_modules/typeorm/cli.js",
     "migration:generate": "npm run typeorm -- migration:generate -d src/config/typeorm.config.ts",
     "migration:run": "npm run typeorm -- migration:run -d src/config/typeorm.config.ts",
+    "migration:run:prod": "npm run typeorm:prod -- migration:run -d dist/config/typeorm.config.js",
     "migration:revert": "npm run typeorm -- migration:revert -d src/config/typeorm.config.ts",
     "seed": "ts-node -r tsconfig-paths/register src/database/seeds/seed.ts",
-    "prepare": "husky"
+    "prepare": "husky || true",
+    "render:build": "npm ci --include=dev && npm run build",
+    "render:start": "npm run migration:run:prod && npm run start:prod"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
   },
   "dependencies": {
     "@nestjs/common": "^10.3.0",
@@ -53,6 +61,7 @@
     "passport-jwt": "^4.0.1",
     "passport-local": "^1.0.0",
     "pg": "^8.11.3",
+    "qrcode": "^1.5.4",
     "reflect-metadata": "^0.2.1",
     "rxjs": "^7.8.1",
     "socket.io": "^4.6.1",
@@ -74,6 +83,7 @@
     "@types/nodemailer": "^6.4.14",
     "@types/passport-jwt": "^4.0.0",
     "@types/passport-local": "^1.0.38",
+    "@types/qrcode": "^1.5.6",
     "@types/speakeasy": "^2.0.10",
     "@types/supertest": "^6.0.2",
     "@types/uuid": "^9.0.7",
@@ -92,7 +102,8 @@
     "ts-loader": "^9.5.1",
     "ts-node": "^10.9.2",
     "tsconfig-paths": "^4.2.0",
-    "typescript": "^5.3.3"
+    "typescript": "^5.3.3",
+    "typescript-eslint": "^8.50.0"
   },
   "lint-staged": {
     "*.{ts,tsx}": [
